@@ -1,6 +1,6 @@
 {
   "name": "nm_deno",
-  "description": "Native Messaging Host Protocol Example",
+  "description": "Deno Native Messaging Host",
   "path": "",
   "type": "stdio",
   "allowed_origins": []
