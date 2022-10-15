@@ -1,4 +1,4 @@
-#!deno run
+#!/usr/bin/env -S ./deno run --v8-flags="--expose-gc,--jitless"
 // Deno Native Messaging host
 // guest271314, 10-5-2022
 async function getMessage() {
@@ -26,6 +26,7 @@ async function main() {
   while (true) {
     const message = await getMessage();
     await sendMessage(message);
+    gc();
   }
 }
 
