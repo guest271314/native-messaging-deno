@@ -1,4 +1,10 @@
-var port = chrome.runtime.connectNative('nm_deno');
-port.onMessage.addListener(e=> console.log(e));
-port.onDisconnect.addListener(e=> console.log(e));
+globalThis.name = chrome.runtime.getManifest().short_name;
+
+globalThis.port = chrome.runtime.connectNative(globalThis.name);
+port.onMessage.addListener((message) => console.log(message));
+port.onDisconnect.addListener((p) => console.log(chrome.runtime.lastError));
 port.postMessage(new Array(200000));
+
+chrome.runtime.onInstalled.addListener((reason) => {
+  console.log(reason);
+});
