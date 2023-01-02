@@ -16,9 +16,13 @@ async function getMessage() {
 }
 
 async function sendMessage(message) {
-  const header = new Uint32Array([message.length]);
-  await stdout.write(new Uint8Array(header.buffer));
-  await stdout.write(message);
+  const header = Uint32Array.from({
+    length: 4,
+  }, (_,index)=>(message.length >> (index * 8)) & 0xff);
+  const output = new Uint8Array(header.length + message.length);
+  output.set(header, 0);
+  output.set(message, 4);
+  await stdout.write(output);
   await stdout.flush();
 }
 
