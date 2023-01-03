@@ -3,7 +3,7 @@
 // guest271314, 10-5-2022
 import { BufReader } from "https://deno.land/std@0.170.0/io/buf_reader.ts";
 import { BufWriter } from "https://deno.land/std@0.170.0/io/buf_writer.ts";
-
+// https://github.com/denoland/deno/discussions/17236#discussioncomment-4566134
 const stdin = new BufReader(Deno.stdin);
 const stdout = new BufWriter(Deno.stdout);
 
