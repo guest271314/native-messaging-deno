@@ -37,6 +37,5 @@ async function main() {
 try {
   main();
 } catch (e) {
-    //await Deno.writeTextFile('log.txt', e.message);
   Deno.exit();
 }
