@@ -1,4 +1,4 @@
-#!deno run --v8-flags="--expose-gc,--jitless"
+#!/usr/bin/env -S ./deno run --v8-flags="--expose-gc,--jitless"
 // Deno Native Messaging host
 // guest271314, 10-5-2022
 
