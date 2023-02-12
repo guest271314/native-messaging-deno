@@ -1,29 +1,29 @@
 #!/usr/bin/env -S ./deno run --v8-flags="--expose-gc,--jitless"
 // Deno Native Messaging host
 // guest271314, 10-5-2022
-import { BufReader } from "https://deno.land/std@0.170.0/io/buf_reader.ts";
-import { BufWriter } from "https://deno.land/std@0.170.0/io/buf_writer.ts";
+
 // https://github.com/denoland/deno/discussions/17236#discussioncomment-4566134
-const stdin = new BufReader(Deno.stdin);
-const stdout = new BufWriter(Deno.stdout);
+// https://github.com/saghul/txiki.js/blob/master/src/js/core/tjs/eval-stdin.js
+async function readFullAsync(length) {
+  const buffer = new Uint8Array(65536);
+  const data = [];
+  let n = null;
+  while (data.length < length && (n = await Deno.stdin.read(buffer))) {
+    data.push(...buffer.subarray(0, n));
+  }
+  return new Uint8Array(data);
+}
 
 async function getMessage() {
   const header = new Uint32Array(1);
-  await stdin.readFull(new Uint8Array(header.buffer));
-  const message = new Uint8Array(header[0]);
-  await stdin.readFull(message);
-  return message;
+  await Deno.stdin.read(new Uint8Array(header.buffer));
+  return readFullAsync(header[0]);
 }
 
 async function sendMessage(message) {
-  const header = Uint32Array.from({
-    length: 4,
-  }, (_,index)=>(message.length >> (index * 8)) & 0xff);
-  const output = new Uint8Array(header.length + message.length);
-  output.set(header, 0);
-  output.set(message, 4);
-  await stdout.write(output);
-  await stdout.flush();
+  const header = new Uint32Array([message.length]);
+  await Deno.stdout.write(new Uint8Array(header.buffer));
+  await Deno.stdout.write(message);
 }
 
 async function main() {
@@ -37,5 +37,6 @@ async function main() {
 try {
   main();
 } catch (e) {
+    //await Deno.writeTextFile('log.txt', e.message);
   Deno.exit();
 }
