@@ -7,7 +7,7 @@
 
 // Expected commands to execute
 const commands = new Set();
-commands.add('cat manifest.json');
+commands.add('cat local_server_export.js');
 
 const encoder = new TextEncoder();
 
