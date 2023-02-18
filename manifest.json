@@ -2,13 +2,37 @@
   "name": "nm-deno",
   "short_name": "nm_deno",
   "version": "1.0",
-  "description": "Deno Native Messaging host",
+  "description": "Deno Native Messaging host dynamic local HTTPS server",
   "manifest_version": 3,
-  "permissions": ["nativeMessaging"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
+  "host_permissions": [
+    "<all_urls>",
+    "file:///*"
+  ],
+  "permissions": [
+    "nativeMessaging",
+    "webRequest",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "*.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "extensions": []
+    }
+  ],
   "action": {},
   "homepage_url": "https://github.com/guest271314/native-messaging-deno"
 }
