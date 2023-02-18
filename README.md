@@ -7,7 +7,7 @@ Installation and usage on Chrome and Chromium
 3. Click `Load unpacked`.
 4. Select native-messaging-deno folder.
 5. Note the generated extension ID.
-6. Open `nm_deno.json` in a text editor, set `"path"` to absolute path of `nm_deno.js` and `chrome-extension://<ID>/` using ID from 5 in `"allowed_origins"` array. 
+6. Open `nm_deno.json` in a text editor, set `"path"` to absolute path of `local_server.js` and `chrome-extension://<ID>/` using ID from 5 in `"allowed_origins"` array. 
 7. Copy the file to Chrome or Chromium configuration folder, e.g., Chromium on \*nix `~/.config/chromium/NativeMessagingHosts`; Chrome dev channel on \*nix `~/.config/google-chrome-unstable/NativeMessagingHosts`.
 8. Make sure `deno` executable and `nm_deno.js` are executable. To download `deno` executable into the cloned GitHub directory that is used as the local unpacked extension directory (and optionally strip symbolic information from the `deno` executable to reduce size) you can run
 ```
