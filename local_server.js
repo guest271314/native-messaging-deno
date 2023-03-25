@@ -297,12 +297,12 @@ async function main() {
     const text = await request.text();
     if (commands.has(text)) {
       const json = text.split(' ');
-      const process = Deno.run({
-        cmd: json,
+      const command = new Deno.Command(json.shift(), {
+        args: json,
         stdout: 'piped',
-        stderr: 'piped',
+        stdin: 'piped',
       });
-      const reader = process.stdout.readable.getReader();
+      const process = command.spawn();
       body = new ReadableStream({
         async pull(c) {
           const {value, done} = await reader.read();
