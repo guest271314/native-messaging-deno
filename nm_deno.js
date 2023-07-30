@@ -11,7 +11,7 @@ https://github.com/guest271314/captureSystemAudio/blob/master/native_messaging/c
 and https://github.com/guest271314/captureSystemAudio/blob/master/native_messaging/capture_system_audio/set_externally_connectable.js.
 
 port = null;
-var port = chrome.runtime.connect('bpicaakmdipgajhmahdmjdlcojepkgce');
+var port = chrome.runtime.connect('<ID>');
 port.onMessage.addListener((message) => {
   console.log(message);
 });
