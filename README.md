@@ -1,4 +1,6 @@
-Deno Native Messaging Host
+Deno Native Messaging Host - fetch duplex
+
+See [Fetch body streams are not full duplex #1254](https://github.com/whatwg/fetch/issues/1254).
 
 Installation and usage on Chrome and Chromium
 
@@ -19,10 +21,25 @@ Installation and usage on Chrome and Chromium
     && rm deno.zip \
     && strip deno 
 ```
-9. To test click `service worker` link in panel of unpacked extension which is DevTools for background.js in MV3 `ServiceWorker`, observe echo'ed message Deno Native Messaging host. To disconnect run `port.disconnect()`.
+9. This uses Deno's `fetch()` for full duplex streaming (writing to the uploaded `ReadableStream` and reading from the `ReadableStream` from the `Response` `body` using a single request). Each native message passed to the host from the Web page is written to the `writable` side of a `TransformStream()` where the `readable` side is set as value of `body` in sencond parameter passed to `Request()` passed to `fetch()`. To test navigate to an origin listed in `"matches"` array in `"externally_connectable"` in manifest.json, in source code, Sources => Snippets, or in `console` run something like
 
+```
+port = null;
+var port = chrome.runtime.connect('<ID>'); // Where <ID> is the generated unpacked extension ID
+port.onMessage.addListener((message) => {
+  console.log(message);
+});
+port.onDisconnect.addListener((message) => {
+  console.log(message);
+});
+port.postMessage({url:'https://comfortable-deer-52.deno.dev', method:'post'});
+await new Promise((resolve) => setTimeout(resolve, 200));
+port.postMessage({a:'b', c:'d'}); // Transformed to uppercase {A: 'B', C: 'D'}
+// Abort the request, reload the extension.
+port.postMessage(`ABORT_STREAM`);
+```
 
-The Native Messaging host echoes back the message passed. 
+Caveat with this proof-of-concept: Deno Deploy times out the server (the same server code used for local development commented in `nm_deno.js`) in ~5 1/2 minutes.
 
 For differences between OS and browser implementations see [Chrome incompatibilities](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities#native_messaging).
 
