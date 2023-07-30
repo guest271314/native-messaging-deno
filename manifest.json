@@ -2,12 +2,17 @@
   "name": "nm-deno",
   "short_name": "nm_deno",
   "version": "1.0",
-  "description": "Deno Native Messaging host",
+  "description": "Deno Native Messaging host - fetch duplex",
   "manifest_version": 3,
   "permissions": ["nativeMessaging"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
+  },
+  "externally_connectable": {
+    "matches": ["https://*.github.com/*"],
+    "ids": ["*"]
   },
   "action": {},
   "homepage_url": "https://github.com/guest271314/native-messaging-deno"
