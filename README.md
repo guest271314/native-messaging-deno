@@ -36,7 +36,8 @@ port.postMessage({url:'https://comfortable-deer-52.deno.dev', method:'post'});
 await new Promise((resolve) => setTimeout(resolve, 200));
 port.postMessage({a:'b', c:'d'}); // Transformed to uppercase {A: 'B', C: 'D'}
 // Abort the request, reload the extension.
-port.postMessage(`ABORT_STREAM`);
+port.postMessage(`CLOSE_STREAM`);
+// port.postMessage(`ABORT_STREAM`);
 ```
 
 Caveat with this proof-of-concept: Deno Deploy times out the server (the same server code used for local development commented in `nm_deno.js`) in ~5 1/2 minutes.
