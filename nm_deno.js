@@ -1,5 +1,5 @@
 #!/usr/bin/env -S deno run -A --unsafely-ignore-certificate-errors=localhost --unstable --v8-flags="--expose-gc,--jitless"
- // Deno Native Messaging host
+// Deno Native Messaging host
 // guest271314, 10-5-2022
 // Browser <=> Deno fetch() full duplex streaming
 // 7-22-2023
@@ -21,29 +21,12 @@ port.onDisconnect.addListener((message) => {
 port.postMessage({url:'https://comfortable-deer-52.deno.dev', method:'post'});
 await new Promise((resolve) => setTimeout(resolve, 200));
 port.postMessage({a:'b', c:'d'}); // {A: 'B', C: 'D'}
-port.postMessage(`ABORT_STREAM`);
+port.postMessage(`CLOSE_STREAM`);
+// port.postMessage(`ABORT_STREAM`);
 */
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
-
-// Local testing
-/*
-const wait = async (ms) => new Promise((r) => setTimeout(r, ms));
-
-const responseInit = {
-  headers: {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'text/plain; charset=UTF-8',
-    'Cross-Origin-Opener-Policy': 'unsafe-none',
-    'Cross-Origin-Embedder-Policy': 'unsafe-none',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Private-Network': 'true',
-    'Access-Control-Allow-Headers': 'Access-Control-Request-Private-Network',
-    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,HEAD,QUERY',
-  },
-};
-*/
 
 // https://github.com/denoland/deno/discussions/17236#discussioncomment-4566134
 // https://github.com/saghul/txiki.js/blob/master/src/js/core/tjs/eval-stdin.js
@@ -82,7 +65,7 @@ async function getMessage() {
     // Returning the Promise, or using await doesn't stream
     return Promise.race([, fetch(new Request(url, {
         // Node.js logs duplex must set (to half) for upload streaming, still doesn't work using the same code
-        duplex, 
+        duplex,
         method,
         headers,
         signal,
@@ -111,7 +94,21 @@ async function getMessage() {
             }));
             Deno.exit();
           }
-        }))).catch(async (e) => {
+        })))
+      .then(async () => {
+        ({
+          writable,
+          readable: body
+        } = new TransformStream());
+        abortable = new AbortController();
+        ({
+          signal
+        } = abortable);
+        writer = null;
+        now = null;
+        await sendMessage(encodeMessage('Stream reset after closing.'));
+      })
+      .catch(async (e) => {
         await sendMessage(encodeMessage(e.message));
       })
     ]);
@@ -120,6 +117,10 @@ async function getMessage() {
     const message = decoder.decode(data);
     if (message === `"ABORT_STREAM"`) {
       return abortable.abort(message);
+    }
+    if (message === `"CLOSE_STREAM"`) {
+      await writer.close();
+      return await writer.closed;
     }
     return await writer.write(data);
   }
@@ -138,6 +139,21 @@ function encodeMessage(message) {
 async function main() {
   /*
   // Local testing
+  const wait = async (ms) => new Promise((r) => setTimeout(r, ms));
+
+  const responseInit = {
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'text/plain; charset=UTF-8',
+      'Cross-Origin-Opener-Policy': 'unsafe-none',
+      'Cross-Origin-Embedder-Policy': 'unsafe-none',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Private-Network': 'true',
+      'Access-Control-Allow-Headers': 'Access-Control-Request-Private-Network',
+      'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,HEAD,QUERY',
+    },
+  };
+  
   (async () => {
     // https://medium.com/deno-the-complete-reference/http-2-in-deno-f825251a5ab2
     for await (
