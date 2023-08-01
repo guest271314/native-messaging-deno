@@ -38,7 +38,7 @@ port.onDisconnect.addListener((message) => {
 // Set in Request() passed to fetch() with readable side of TransformStream set as body
 port.postMessage({url:'https://comfortable-deer-52.deno.dev', method:'post'});
 await new Promise((resolve) => setTimeout(resolve, 200));
-port.postMessage({a:'b', c:'d'}); // Transformed to uppercase {A: 'B', C: 'D'}
+port.postMessage({a:'b',c:'d'}); // Transformed to uppercase {A: 'B', C: 'D'}
 // Close WritableStreamDefaultWriter from writable side of TransformStream
 port.postMessage(`CLOSE_STREAM`);
 // Abort the request, reload the extension.
