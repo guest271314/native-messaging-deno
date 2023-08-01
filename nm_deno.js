@@ -10,7 +10,10 @@ Note, setting "externally_matches" can be done dynamically, see
 https://github.com/guest271314/captureSystemAudio/blob/master/native_messaging/capture_system_audio/background.js#L383-L415
 and https://github.com/guest271314/captureSystemAudio/blob/master/native_messaging/capture_system_audio/set_externally_connectable.js.
 
-port = null;
+if (port) {
+  port.disconnect();
+  port = null;
+};
 var port = chrome.runtime.connect('<ID>');
 port.onMessage.addListener((message) => {
   console.log(message);
