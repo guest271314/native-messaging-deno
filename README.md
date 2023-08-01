@@ -21,10 +21,12 @@ Installation and usage on Chrome and Chromium
     && rm deno.zip \
     && strip deno 
 ```
-9. This uses Deno's `fetch()` for full duplex streaming (writing to the uploaded `ReadableStream` and reading from the `ReadableStream` from the `Response` `body` using a single request). Each native message passed to the host from the Web page is written to the `writable` side of a `TransformStream()` where the `readable` side is set as value of `body` in sencond parameter passed to `Request()` passed to `fetch()`. To test navigate to an origin listed in `"matches"` array in `"externally_connectable"` in manifest.json, in source code, Sources => Snippets, or in `console` run something like
+9. This uses Deno's `fetch()` for full duplex streaming (writing to the uploaded `ReadableStream` and reading from the `ReadableStream` from the `Response` `body` using a single request). Each native message passed to the host from the Web page is written to the `writable` side of a `TransformStream()` where the `readable` side is set as value of `body` in second parameter passed to `Request()` passed to `fetch()`. To test navigate to an origin listed in `"matches"` array in `"externally_connectable"` in manifest.json, in source code, Sources => Snippets, or in `console` run something like
 
 ```
-port = null;
+if (port) {
+  port = null;
+};
 var port = chrome.runtime.connect('<ID>'); // Where <ID> is the generated unpacked extension ID
 port.onMessage.addListener((message) => {
   console.log(message);
