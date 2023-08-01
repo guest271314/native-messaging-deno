@@ -34,11 +34,11 @@ port.onMessage.addListener((message) => {
 port.onDisconnect.addListener((message) => {
   console.log(message);
 });
-// Passed to `fetch()`, with `readable` side of `TransformStream` set as `body` in `Request()` object
+// Passed to fetch(), with readable side of TransformStream set as body in Request() object
 port.postMessage({url:'https://comfortable-deer-52.deno.dev', method:'post'});
 await new Promise((resolve) => setTimeout(resolve, 200));
 port.postMessage({a:'b', c:'d'}); // Transformed to uppercase {A: 'B', C: 'D'}
-// Close the `WritableStreamDefaultWriter` from `writable` side of `TransformStream`
+// Close the WritableStreamDefaultWriter from `writable` side of TransformStream
 port.postMessage(`CLOSE_STREAM`);
 // Abort the request, reload the extension.
 // port.postMessage(`ABORT_STREAM`);
