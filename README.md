@@ -27,18 +27,19 @@ Installation and usage on Chrome and Chromium
 if (port) {
   port = null;
 };
-var port = chrome.runtime.connect('<ID>'); // Where <ID> is the generated unpacked extension ID
+// Where <ID> is the generated unpacked extension ID
+var port = chrome.runtime.connect('<ID>'); 
 port.onMessage.addListener((message) => {
   console.log(message);
 });
 port.onDisconnect.addListener((message) => {
   console.log(message);
 });
-// Passed to fetch(), with readable side of TransformStream set as body in Request() object
+// Set in Request() passed to fetch() with readable side of TransformStream set as body
 port.postMessage({url:'https://comfortable-deer-52.deno.dev', method:'post'});
 await new Promise((resolve) => setTimeout(resolve, 200));
 port.postMessage({a:'b', c:'d'}); // Transformed to uppercase {A: 'B', C: 'D'}
-// Close the WritableStreamDefaultWriter from `writable` side of TransformStream
+// Close WritableStreamDefaultWriter from writable side of TransformStream
 port.postMessage(`CLOSE_STREAM`);
 // Abort the request, reload the extension.
 // port.postMessage(`ABORT_STREAM`);
