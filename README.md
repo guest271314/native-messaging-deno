@@ -57,7 +57,7 @@ Something like
 var bool = 1;
 async function keepalive() {
   while (bool) {
-    port.postMessage('KEEPALIVE');
+    port.postMessage(null);
     await new Promise((resolve) => setTimeout(resolve, 1000 * 60));
   }
   return 'Done streaming';
