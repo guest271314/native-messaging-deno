@@ -45,7 +45,7 @@ port.postMessage(`CLOSE_STREAM`);
 // port.postMessage(`ABORT_STREAM`);
 ```
 
-Note: It looks like Deno Deploy or `deno` 1.36.0 or both stopped timing out the connection in ~5 minutes; now Deno Deploy server times out in ~10 minutes.
+Note: Deno Deploy times out the server (the same server code used for local development commented in `nm_deno.js`) in ~5 1/2 minutes.
 
 For differences between OS and browser implementations see [Chrome incompatibilities](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities#native_messaging).
 
