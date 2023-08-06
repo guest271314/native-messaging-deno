@@ -90,10 +90,9 @@ async function getMessage() {
             await sendMessage(encodeMessage('Stream closed.'));
           },
           async abort(reason) {
-            now = ((performance.now() - now) / 1000) / 60;
             await sendMessage(encodeMessage({
               ABORT_REASON: reason,
-              now
+              now: ((performance.now() - now) / 1000) / 60
             }));
             Deno.exit();
           }
