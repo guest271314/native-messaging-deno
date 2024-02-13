@@ -1,7 +1,9 @@
-#!/usr/bin/env -S ./deno run --v8-flags="--expose-gc,--jitless"
+#!/usr/bin/env -S ./deno run --v8-flags="--expose-gc"
 // Deno Native Messaging host
 // guest271314, 10-5-2022
 
+const buffer = new ArrayBuffer(0, { maxByteLength: 1024 ** 2 });
+const view = new DataView(buffer);
 const encoder = new TextEncoder();
 
 function encodeMessage(message) {
@@ -9,8 +11,6 @@ function encodeMessage(message) {
 }
 
 async function* getMessage() {
-  const buffer = new ArrayBuffer(0, { maxByteLength: 1024**2 });
-  const view = new DataView(buffer);
   let messageLength = 0;
   let readOffset = 0;
   for await (let message of Deno.stdin.readable) {
@@ -37,9 +37,12 @@ async function* getMessage() {
 }
 
 async function sendMessage(message) {
-  const header = new Uint32Array([message.length]);
-  await Deno.stdout.write(new Uint8Array(header.buffer));
-  await Deno.stdout.write(message);
+  await new Blob([
+    new Uint8Array(new Uint32Array([message.length]).buffer),
+    message,
+  ])
+    .stream()
+    .pipeTo(Deno.stdout.writable, { preventClose: true });
 }
 
 try {
