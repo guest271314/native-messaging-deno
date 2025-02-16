@@ -303,6 +303,7 @@ async function main() {
         stdin: 'piped',
       });
       const process = command.spawn();
+      const reader = process.stdout.getReader();
       body = new ReadableStream({
         async pull(c) {
           const {value, done} = await reader.read();
